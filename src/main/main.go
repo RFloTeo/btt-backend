@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"os"
 )
 
 /******************** DATA STRUCTS ***********************/
@@ -55,10 +56,19 @@ func main() {
 	http.HandleFunc("/join", joinGame)
 	http.HandleFunc("/wait", checkJoinGame)
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(getPort(), nil)
 	if err != nil {
 		log.Println("could not start server")
 	}
+}
+
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		fmt.Println("WARNING: No PORT detected, defaulting to 8080")
+	}
+	return ":" + port
 }
 
 /************************ HANDLERS ************************/
